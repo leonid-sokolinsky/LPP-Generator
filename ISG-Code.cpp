@@ -44,27 +44,26 @@ extern void ISG_GenerateLPP(PT_matrix_T A, PT_column_T b, PT_vector_T c) {
 				shiftSum = fabs(b[i] / A[i][0] + b[k] / A[k][0]);
 				if (likeSum < DELTA_LIKE && shiftSum < DELTA_SHIFT) {
 					/* debug */ bad++; /* end debug */
-					/* debug */ cout << "likeSum = " << likeSum << "\tshiftSum =" << shiftSum << endl;
-					/* debug */ cout << k + 1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[k][j] << "\t"; cout << "<=\t" << b[k] << "\n";
-					/* debug */ cout << i + 1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[i][j] << "\t"; cout << "<=\t" << b[i] << "\n";
-					/* debug */ cout << "------------------------\n";
+					//* debug */ cout << "likeSum = " << likeSum << "\tshiftSum =" << shiftSum << endl; /* end debug */
+					//* debug */ cout << k + 1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[k][j] << "\t"; cout << "<=\t" << b[k] << "\n"; /* end debug */
+					//* debug */ cout << i + 1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[i][j] << "\t"; cout << "<=\t" << b[i] << "\n"; /* end debug */
+					//* debug */ cout << "------------------------\n";
 					break;
 				}
 				likeDif = LikeDif(A[i],A[k]);
 				shiftDif = fabs(b[i] / A[i][0] - b[k] / A[k][0]);
 				if (likeDif < DELTA_LIKE && shiftDif < DELTA_SHIFT) {
 					/* debug */ bad++; /* end debug */
-					/* debug */ cout << "likeDif = " << likeDif << "\tshiftDif =" << shiftDif << endl;
-					/* debug */ cout << k+1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[k][j] << "\t"; cout << "<=\t" << b[k] << "\n";
-					/* debug */ cout << i+1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[i][j] << "\t"; cout << "<=\t" << b[i] << "\n";
-					/* debug */ cout << "------------------------\n";
+					//* debug */ cout << "likeDif = " << likeDif << "\tshiftDif =" << shiftDif << endl;
+					//* debug */ cout << k+1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[k][j] << "\t"; cout << "<=\t" << b[k] << "\n";
+					//* debug */ cout << i+1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[i][j] << "\t"; cout << "<=\t" << b[i] << "\n";
+					//* debug */ cout << "------------------------\n";
 					break;
 				}
 			}
 		} while ((likeDif < DELTA_LIKE && shiftDif < DELTA_SHIFT) || (likeSum < DELTA_LIKE && shiftSum < DELTA_SHIFT));
 
-		if (bad > 0)
-			failuresType2++;
+		/* debug */ if (bad > 0) failuresType2++; /* end debug */
 		if (!PointIn(_hypercubeCenter, A[i], b[i])) {
 			for (int j = 0; j < ISG_N; j++)
 				A[i][j] = -A[i][j];
@@ -90,7 +89,6 @@ extern void ISG_GenerateLPP(PT_matrix_T A, PT_column_T b, PT_vector_T c) {
 		c[j] = ((double)rand() / (RAND_MAX + 1)) * C_MAX;
 	/* debug */ cout << "Failures 'Not between' = " << failuresType1 << endl;  /* end debug */
 	/* debug */ cout << "Failures 'Similar' = " << failuresType2 << endl;  /* end debug */
-	//* debug */ cout << "Failures 'Sum' = " << failuresType3 << endl;  /* end debug */
 }
 
 //------------------------------- Internal Functions --------------------
@@ -167,18 +165,3 @@ static double LikeSum(PT_vector_T a1, PT_vector_T a2) {
 	//s /= ISG_N - 1;
 	return s;
 }
-
-/*
-inline int Rnd(int rangeMin, int rangeMax) {
-	assert(rangeMax > rangeMin);
-	int res;
-	int range;
-
-	range = rangeMax - rangeMin;
-	if (range < RAND_MAX)
-		res = rand() % range + rangeMin;
-	else
-		res = (int)((double)rand() / (RAND_MAX + 1) * range + rangeMin);
-	return res;
-}
-/**/

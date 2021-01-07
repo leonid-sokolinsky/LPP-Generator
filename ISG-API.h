@@ -1,7 +1,7 @@
 ﻿/*==============================================================================
 Project: LiFe
 Theme: LPP Generator
-Module: Application programming interface
+Module: Application Programming Interface
 Prefix: ISG
 Author: Leonid B. Sokolinsky
 ==============================================================================*/

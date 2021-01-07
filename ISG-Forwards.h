@@ -1,7 +1,7 @@
 ﻿/*==============================================================================
 Project: LiFe
 Theme: LPP Generator
-Module: Forwards of Ststic Function
+Module: Forwards of Static Function
 Prefix: ISG
 Author: Leonid B. Sokolinsky
 ==============================================================================*/
