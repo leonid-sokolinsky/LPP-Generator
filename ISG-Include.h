@@ -8,4 +8,5 @@ Author: Leonid B. Sokolinsky
 #include <assert.h>
 #include <iostream>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>

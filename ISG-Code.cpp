@@ -91,6 +91,28 @@ extern void ISG_GenerateLPP(PT_matrix_T A, PT_column_T b, PT_vector_T c) {
 	/* debug */ cout << "Failures 'Similar' = " << failuresType2 << endl;  /* end debug */
 }
 
+extern errno_t ISG_SaveLPP(PT_matrix_T A, PT_column_T b, PT_vector_T c, const char* filename) {
+	FILE* stream;
+	errno_t err;
+
+	err = fopen_s(&stream,filename, "w");
+	if (err != 0)
+		return err;
+
+	fprintf_s(stream, "%d\t%d\n", ISG_M, ISG_N);
+
+	for (int i = 0; i < ISG_M; i++) {
+		for (int j = 0; j < ISG_N; j++)
+			fprintf_s(stream, "%f\t", A[i][j]);
+		fprintf_s(stream, "%f\n", b[i]);
+	}
+	for (int j = 0; j < ISG_N; j++)
+		fprintf_s(stream, "%f\t", c[j]);
+
+	err = fclose(stream);
+	return err;
+}
+
 //------------------------------- Internal Functions --------------------
 static void MakeRndInequality(PT_vector_T a, PT_float_T* b) {
 	double dist;

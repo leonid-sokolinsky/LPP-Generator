@@ -31,4 +31,11 @@ int main() {
 	for (int j = 0; j < ISG_N; j++)
 		cout << c[j] << "\t";
 	cout << "\n";
+
+	errno_t err;
+	err = ISG_SaveLPP(A, b, c, "C:/TEMP/lpp.txt");
+	if (err != 0)
+		cout << "Write failure! Error number: " << err << endl;
+	else
+		cout << "LPP is saved successfully!" << endl;
 }
