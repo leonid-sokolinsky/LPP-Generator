@@ -17,7 +17,7 @@ using namespace std;
 #define	B_MAX (ISG_ALPHA*5000)				// Maximal random value for b
 #define	C_MAX (ISG_THETA)		// Maximal random value for c
 //------------------------------- Types -------------------------------
-static PT_vector_T _hypercubeCenter;		// Center of hypercube
+static ISG_vector_T _hypercubeCenter;		// Center of hypercube
 /* debug */static int failuresType1 = 0; /* end debug */
 /* debug */static int failuresType2 = 0; /* end debug */
 
@@ -27,7 +27,7 @@ extern void ISG_Init() {
 		_hypercubeCenter[j] = ISG_RHO;
 }
 
-extern void ISG_GenerateLPP(PT_matrix_T A, PT_column_T b, PT_vector_T c) {
+extern void ISG_GenerateLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 	double likeDif = DELTA_LIKE + 1;
 	double likeSum = DELTA_LIKE + 1;
 	double shiftDif = DELTA_SHIFT + 1;
@@ -91,7 +91,7 @@ extern void ISG_GenerateLPP(PT_matrix_T A, PT_column_T b, PT_vector_T c) {
 	/* debug */ cout << "Failures 'Similar' = " << failuresType2 << endl;  /* end debug */
 }
 
-extern errno_t ISG_SaveLPP(PT_matrix_T A, PT_column_T b, PT_vector_T c, const char* filename) {
+extern errno_t ISG_SaveLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c, const char* filename) {
 	FILE* stream;
 	errno_t err;
 
@@ -114,7 +114,7 @@ extern errno_t ISG_SaveLPP(PT_matrix_T A, PT_column_T b, PT_vector_T c, const ch
 }
 
 //------------------------------- Internal Functions --------------------
-static void MakeRndInequality(PT_vector_T a, PT_float_T* b) {
+static void MakeRndInequality(ISG_vector_T a, ISG_float_T* b) {
 	double dist;
 	do {
 		RndFloatVector(a);
@@ -128,18 +128,18 @@ static void MakeRndInequality(PT_vector_T a, PT_float_T* b) {
 	} while (true);
 }
 
-inline double DistanceFromPointToHyperplane(PT_vector_T point, PT_vector_T a, PT_float_T b) {
+inline double DistanceFromPointToHyperplane(ISG_vector_T point, ISG_vector_T a, ISG_float_T b) {
 	return fabs(Vector_DotProduct(point, a) - b) / sqrt(Vector_NormSquare(a));
 }
 
-static double Vector_DotProduct(PT_vector_T x, PT_vector_T y) {
+static double Vector_DotProduct(ISG_vector_T x, ISG_vector_T y) {
 	double s = 0;
 	for (int j = 0; j < ISG_N; j++)
 		s += x[j] * y[j];
 	return s;
 }
 
-static double Vector_NormSquare(PT_vector_T x) {
+static double Vector_NormSquare(ISG_vector_T x) {
 	double s = 0;
 
 	for (int j = 0; j < ISG_N; j++)
@@ -147,12 +147,12 @@ static double Vector_NormSquare(PT_vector_T x) {
 	return s;
 }
 
-static void RndFloatVector(PT_vector_T vector) {
+static void RndFloatVector(ISG_vector_T vector) {
 	for (int i = 0; i < ISG_N; i++)
 		vector[i] = RndFloatValue(A_MAX);
 }
 
-inline PT_float_T RndFloatValue(double rndMax) {
+inline ISG_float_T RndFloatValue(double rndMax) {
 	return RndSign() * (((double)rand() / (RAND_MAX + 1)) * rndMax);
 }
 
@@ -163,14 +163,14 @@ inline int RndSign() {
 	return res;
 }
 
-inline bool PointIn(PT_vector_T x, PT_vector_T a, PT_float_T b) { // If the point belonges to the Halfspace <a,x> <= b
+inline bool PointIn(ISG_vector_T x, ISG_vector_T a, ISG_float_T b) { // If the point belonges to the Halfspace <a,x> <= b
 	if (Vector_DotProduct(a, x) > b)
 		return false;
 	else
 		return true;
 }
 
-static double LikeDif(PT_vector_T a1, PT_vector_T a2) {
+static double LikeDif(ISG_vector_T a1, ISG_vector_T a2) {
 	double s = 0;
 
 	for (int j = 1; j < ISG_N; j++)
@@ -179,7 +179,7 @@ static double LikeDif(PT_vector_T a1, PT_vector_T a2) {
 	return s;
 }
 
-static double LikeSum(PT_vector_T a1, PT_vector_T a2) {
+static double LikeSum(ISG_vector_T a1, ISG_vector_T a2) {
 	double s = 0;
 
 	for (int j = 1; j < ISG_N; j++)

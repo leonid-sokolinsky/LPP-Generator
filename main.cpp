@@ -8,12 +8,12 @@ Author: Leonid B. Sokolinsky
 #include <iomanip>
 #include "ISG-API.h"
 using namespace std;
-typedef double PT_float_T;
+typedef double ISG_float_T;
 
 int main() {
-	static PT_matrix_T A;
-	static PT_column_T b;
-	static PT_vector_T c;
+	static ISG_matrix_T A;
+	static ISG_column_T b;
+	static ISG_vector_T c;
 
 	cout << setprecision(4);
 
