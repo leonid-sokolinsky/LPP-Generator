@@ -11,84 +11,92 @@ Author: Leonid B. Sokolinsky
 using namespace std;
 
 //------------------------------- Parameters -------------------------------
-#define	DELTA_LIKE 1				// Acceptable likeness of equations
-#define	DELTA_SHIFT (DELTA_LIKE*5)	// Acceptable quantity of shifting
-#define	A_MAX (ISG_ALPHA*5)	// Maximal random value for A
-#define	B_MAX (ISG_ALPHA*5000)				// Maximal random value for b
+#define	MAX_LIKE 0.3				// Maximal acceptable likeness of equations
+#define	MIN_SHIFT (MAX_LIKE*50)	// Minimal acceptable shift
+#define	A_MAX (ISG_ALPHA*5)		// Maximal random value for A
+#define	B_MAX (ISG_ALPHA*50)	// Maximal random value for b
 #define	C_MAX (ISG_THETA)		// Maximal random value for c
 //------------------------------- Types -------------------------------
-static ISG_vector_T _hypercubeCenter;		// Center of hypercube
-/* debug */static int failuresType1 = 0; /* end debug */
-/* debug */static int failuresType2 = 0; /* end debug */
+static ISG_vector_T _center;		// Center of hypercube
+static ISG_float_T _centerObjectF;	// Value of object function in the center of hypercube
+static ISG_column_T _aNorm;
+/* debug */static unsigned _failuresType1 = 0; /* end debug */
+/* debug */static unsigned _failuresType2 = 0; /* end debug */
 
 //------------------------------- External Functions --------------------
 extern void ISG_Init() {
 	for (int j = 0; j < ISG_N; j++)
-		_hypercubeCenter[j] = ISG_RHO;
+		_center[j] = ISG_RHO;
 }
 
-extern void ISG_GenerateLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
-	double likeDif = DELTA_LIKE + 1;
-	double likeSum = DELTA_LIKE + 1;
-	double shiftDif = DELTA_SHIFT + 1;
-	double shiftSum = DELTA_SHIFT + 1;
+extern void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
+	assert(ISG_N * ISG_M * ISG_ALPHA * ISG_RHO * ISG_THETA * _center[0] != 0);
 
-	assert(ISG_N * ISG_M * ISG_ALPHA * ISG_RHO * ISG_THETA * _hypercubeCenter[0] != 0);
+		rand();
+		for (int j = 0; j < ISG_N; j++) {
+			c[j] = ((double)rand() / (RAND_MAX + 1)) * C_MAX;
+			_centerObjectF += c[j] * ISG_RHO;
+		}
+		
+	for (int i = 0; i < ISG_NUM_OF_NATURAL_INEQUALITIES; i++) {
+		unsigned bad;
+		bool like;
 
-	for (int i = 0; i < ISG_NUM_OF_RND_INEQUALITIES; i++) {
-		int bad = 0;
+		bad = 0;
 		do {
-			MakeRndInequality(A[i], &b[i]);
+			MakeRndInequality(A[i], &b[i], c, &_aNorm[i]);
+			like = false;
 			for (int k = i - 1; k > -1; k--) {
-				likeSum = LikeSum(A[i], A[k]);
-				shiftSum = fabs(b[i] / A[i][0] + b[k] / A[k][0]);
-				if (likeSum < DELTA_LIKE && shiftSum < DELTA_SHIFT) {
+				if (like = Like(A[i], b[i], _aNorm[i], A[k], b[k], _aNorm[k])) {
 					/* debug */ bad++; /* end debug */
-					//* debug */ cout << "likeSum = " << likeSum << "\tshiftSum =" << shiftSum << endl; /* end debug */
 					//* debug */ cout << k + 1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[k][j] << "\t"; cout << "<=\t" << b[k] << "\n"; /* end debug */
 					//* debug */ cout << i + 1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[i][j] << "\t"; cout << "<=\t" << b[i] << "\n"; /* end debug */
 					//* debug */ cout << "------------------------\n";
 					break;
 				}
-				likeDif = LikeDif(A[i],A[k]);
-				shiftDif = fabs(b[i] / A[i][0] - b[k] / A[k][0]);
-				if (likeDif < DELTA_LIKE && shiftDif < DELTA_SHIFT) {
-					/* debug */ bad++; /* end debug */
-					//* debug */ cout << "likeDif = " << likeDif << "\tshiftDif =" << shiftDif << endl;
-					//* debug */ cout << k+1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[k][j] << "\t"; cout << "<=\t" << b[k] << "\n";
-					//* debug */ cout << i+1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[i][j] << "\t"; cout << "<=\t" << b[i] << "\n";
-					//* debug */ cout << "------------------------\n";
-					break;
-				}
 			}
-		} while ((likeDif < DELTA_LIKE && shiftDif < DELTA_SHIFT) || (likeSum < DELTA_LIKE && shiftSum < DELTA_SHIFT));
+		} while (like);
 
-		/* debug */ if (bad > 0) failuresType2++; /* end debug */
-		if (!PointIn(_hypercubeCenter, A[i], b[i])) {
+		/* debug */ if (bad > 0) _failuresType2++; /* end debug */
+		if (!PointIn(_center, A[i], b[i])) {
 			for (int j = 0; j < ISG_N; j++)
 				A[i][j] = -A[i][j];
 			b[i] = -b[i];
 		}
 	}
 
-	for (int i = ISG_NUM_OF_RND_INEQUALITIES; i < ISG_NUM_OF_RND_INEQUALITIES + ISG_N; i++) {
+	for (int i = ISG_NUM_OF_NATURAL_INEQUALITIES; i < ISG_NUM_OF_NATURAL_INEQUALITIES + ISG_N; i++) {
 		for (int j = 0; j < ISG_N; j++)
 			A[i][j] = 0;
-		A[i][i - ISG_NUM_OF_RND_INEQUALITIES] = -1;
+		A[i][i - ISG_NUM_OF_NATURAL_INEQUALITIES] = -1;
 		b[i] = 0;
 	}
 
-	for (int i = ISG_NUM_OF_RND_INEQUALITIES + ISG_N; i < ISG_M; i++) {
+	for (int i = ISG_NUM_OF_NATURAL_INEQUALITIES + ISG_N; i < ISG_M; i++) {
 		for (int j = 0; j < ISG_N; j++)
 			A[i][j] = 0;
-		A[i][i - ISG_NUM_OF_RND_INEQUALITIES - ISG_N] = 1;
+		A[i][i - ISG_NUM_OF_NATURAL_INEQUALITIES - ISG_N] = 1;
 		b[i] = ISG_ALPHA;
 	}
 
+	/* debug */ cout << "Failures 'Not between' = " << _failuresType1 << endl;  /* end debug */
+	/* debug */ cout << "Failures 'Similar' = " << _failuresType2 << endl;  /* end debug */
+}
+
+extern void ISG_GenMdlLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
+	assert(ISG_NUM_OF_NATURAL_INEQUALITIES == 1);
+	/* debug */ cout << "m = " << ISG_M << "\t n = " << ISG_N << endl;
+
+	for (int i = 0; i < ISG_M; i++) {
+		ISG_vector_T a;
+		GenA_i(a, i);
+		for (int j = 0; j < ISG_N; j++)
+			A[i][j] = a[j];
+		b[i] = GenB_i(i);
+	}
+	// Generating Objective Function Coefficients
 	for (int j = 0; j < ISG_N; j++)
-		c[j] = ((double)rand() / (RAND_MAX + 1)) * C_MAX;
-	/* debug */ cout << "Failures 'Not between' = " << failuresType1 << endl;  /* end debug */
-	/* debug */ cout << "Failures 'Similar' = " << failuresType2 << endl;  /* end debug */
+		c[j] = ((double)ISG_N - j) * 10;
 }
 
 extern errno_t ISG_SaveLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c, const char* filename) {
@@ -114,22 +122,30 @@ extern errno_t ISG_SaveLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c, const
 }
 
 //------------------------------- Internal Functions --------------------
-static void MakeRndInequality(ISG_vector_T a, ISG_float_T* b) {
-	double dist;
+static void MakeRndInequality(ISG_vector_T a, ISG_float_T* b, ISG_vector_T c, ISG_float_T *aNorm) {
+	ISG_float_T distToCenter;
+	ISG_float_T aNormSquare;
+	ISG_vector_T centerProjection;
+	ISG_float_T aDotProductCenter;
+	ISG_float_T centerProjectionObjectiveF;
+
 	do {
 		RndFloatVector(a);
-		if(a[0] == 0)
-			a[0] += 0.1;
+		if(a[0] == 0) a[0] += 0.1;
+		aNormSquare = Vector_NormSquare(a);
+		*aNorm = sqrt(aNormSquare);
+		aDotProductCenter = Vector_DotProduct(_center, a);
 		*b = RndFloatValue(B_MAX);
-		dist = DistanceFromPointToHyperplane(_hypercubeCenter, a, *b);
-		if (dist < ISG_RHO && dist > ISG_THETA)
-			break;
-		/* debug */ failuresType1++; /* end debug */
+		distToCenter = fabs(aDotProductCenter - *b) / *aNorm;
+		if (distToCenter > ISG_RHO || distToCenter < ISG_THETA) continue;		
+		 ProjectionOnHiperplane(_center, a, aNormSquare, aDotProductCenter, *b, centerProjection);
+		 centerProjectionObjectiveF = Vector_DotProduct(c, centerProjection);
+		 if (_centerObjectF > centerProjectionObjectiveF) {
+			 /* debug */ _failuresType1++; /* end debug */
+			 continue;
+		 }
+		break;
 	} while (true);
-}
-
-inline double DistanceFromPointToHyperplane(ISG_vector_T point, ISG_vector_T a, ISG_float_T b) {
-	return fabs(Vector_DotProduct(point, a) - b) / sqrt(Vector_NormSquare(a));
 }
 
 static double Vector_DotProduct(ISG_vector_T x, ISG_vector_T y) {
@@ -170,20 +186,65 @@ inline bool PointIn(ISG_vector_T x, ISG_vector_T a, ISG_float_T b) { // If the p
 		return true;
 }
 
-static double LikeDif(ISG_vector_T a1, ISG_vector_T a2) {
-	double s = 0;
+static bool Like(ISG_vector_T a1, ISG_float_T b1, ISG_float_T a1Norm, ISG_vector_T a2, ISG_float_T b2, ISG_float_T a2Norm) {
+	double like, shift;
+	
+	like = 0;
+	for (int j = 0; j < ISG_N; j++) 
+		like += fabs(a1[j] / a1Norm - a2[j] / a2Norm);
+	shift = fabs(b1 / a1Norm - b2 / a2Norm);
+	if (like < MAX_LIKE)
+		if (shift < MIN_SHIFT)
+			return true;
 
-	for (int j = 1; j < ISG_N; j++)
-		s += fabs(a1[j] / a1[0] - a2[j] / a2[0]);
-	//s /= ISG_N - 1;
-	return s;
+	like = 0;
+	for (int j = 0; j < ISG_N; j++)
+		like += fabs(a1[j] / a1Norm + a2[j] / a2Norm);
+	shift = fabs(b1 / a1Norm + b2 / a2Norm);
+	if (like < MAX_LIKE)
+		if (shift < MIN_SHIFT)
+			return true;
+
+	return false;
 }
 
-static double LikeSum(ISG_vector_T a1, ISG_vector_T a2) {
-	double s = 0;
+static void GenA_i(ISG_float_T* a, int i) {
 
-	for (int j = 1; j < ISG_N; j++)
-		s += fabs(a1[j] / a1[0] + a2[j] / a2[0]);
-	//s /= ISG_N - 1;
-	return s;
+	if (i < ISG_N) {
+		for (int j = 0; j < ISG_N; j++)
+			a[j] = 0;
+		a[i] = 1;
+		return;
+	}
+
+	if (i == ISG_N) {
+		for (int j = 0; j < ISG_N; j++)
+			a[j] = 1;
+		return;
+	}
+
+/*	if (i == ISG_N + 1) {
+		for (int j = 0; j < ISG_N; j++)
+			a[j] = -1;
+		return;
+	}*/
+
+	for (int j = 0; j < ISG_N; j++)
+		a[j] = 0;
+	a[i - ISG_N - 1] = -1;
+}
+
+inline ISG_float_T GenB_i(int i) {
+	if (i < ISG_N) return ISG_ALPHA;
+
+	if (i == ISG_N) return ISG_ALPHA * (ISG_N - 1) + ISG_ALPHA / 2;
+
+	//if (i == ISG_N + 1) return - ISG_RHO;
+	return 0;
+}
+
+inline void ProjectionOnHiperplane(ISG_vector_T x, ISG_vector_T a, ISG_float_T aNormSquare, ISG_float_T aDotProductx, ISG_float_T b, ISG_vector_T projection) {
+	ISG_float_T fac = (aDotProductx - b) / aNormSquare;
+	for (int j = 0; j < ISG_N; j++)
+		projection[j] = x[j] - fac * a[j];
 }

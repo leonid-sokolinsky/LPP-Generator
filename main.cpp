@@ -18,7 +18,8 @@ int main() {
 	cout << setprecision(4);
 
 	ISG_Init();
-	ISG_GenerateLPP(A, b, c);
+	//ISG_GenMdlLPP(A, b, c);
+	ISG_GenRndLPP(A, b, c);
 
 	cout << "--- Inequality system: ---\n";
 	for (int i = 0; i < ISG_M; i++) {
