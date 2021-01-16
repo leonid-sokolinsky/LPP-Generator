@@ -11,8 +11,8 @@ Author: Leonid B. Sokolinsky
 using namespace std;
 
 //------------------------------- Parameters -------------------------------
-#define	MAX_LIKE 0.3				// Maximal acceptable likeness of equations
-#define	MIN_SHIFT (MAX_LIKE*50)	// Minimal acceptable shift
+#define	MAX_LIKE 2				// Maximal acceptable likeness of equations
+#define	MIN_SHIFT (MAX_LIKE*10)	// Minimal acceptable shift
 #define	A_MAX (ISG_ALPHA*5)		// Maximal random value for A
 #define	B_MAX (ISG_ALPHA*50)	// Maximal random value for b
 #define	C_MAX (ISG_THETA)		// Maximal random value for c
