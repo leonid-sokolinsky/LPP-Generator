@@ -11,8 +11,6 @@ Author: Leonid B. Sokolinsky
 using namespace std;
 
 //------------------------------- Parameters -------------------------------
-#define	MAX_LIKE 2				// Maximal acceptable likeness of equations
-#define	MIN_SHIFT (MAX_LIKE*10)	// Minimal acceptable shift
 #define	A_MAX (ISG_ALPHA*5)		// Maximal random value for A
 #define	B_MAX (ISG_ALPHA*50)	// Maximal random value for b
 #define	C_MAX (ISG_THETA)		// Maximal random value for c
@@ -25,6 +23,8 @@ static ISG_column_T _aNorm;
 
 //------------------------------- External Functions --------------------
 extern void ISG_Init() {
+	srand((unsigned)time(NULL));
+
 	for (int j = 0; j < ISG_N; j++)
 		_center[j] = ISG_RHO;
 }
@@ -32,12 +32,15 @@ extern void ISG_Init() {
 extern void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 	assert(ISG_N * ISG_M * ISG_ALPHA * ISG_RHO * ISG_THETA * _center[0] != 0);
 
-		rand();
-		for (int j = 0; j < ISG_N; j++) {
-			c[j] = ((double)rand() / (RAND_MAX + 1)) * C_MAX;
-			_centerObjectF += c[j] * ISG_RHO;
-		}
-		
+	/*for (int j = 0; j < ISG_N; j++) {
+		c[j] = ((double)rand() / (RAND_MAX + 1)) * C_MAX;
+		_centerObjectF += c[j] * ISG_RHO;
+	}/**/
+	for (int j = 0; j < ISG_N; j++) {
+		c[j] = (ISG_N - j) * C_MAX;
+		_centerObjectF += c[j] * ISG_RHO;
+	}
+
 	for (int i = 0; i < ISG_NUM_OF_NATURAL_INEQUALITIES; i++) {
 		unsigned bad;
 		bool like;
@@ -72,12 +75,18 @@ extern void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 		b[i] = 0;
 	}
 
-	for (int i = ISG_NUM_OF_NATURAL_INEQUALITIES + ISG_N; i < ISG_M; i++) {
+	for (int i = ISG_NUM_OF_NATURAL_INEQUALITIES + ISG_N; i < ISG_M - 1; i++) {
 		for (int j = 0; j < ISG_N; j++)
 			A[i][j] = 0;
 		A[i][i - ISG_NUM_OF_NATURAL_INEQUALITIES - ISG_N] = 1;
 		b[i] = ISG_ALPHA;
 	}
+
+	for (int j = 0; j < ISG_N; j++)
+		A[ISG_M - 1][j] = 1;
+	
+	b[ISG_M - 1] = ISG_ALPHA* (ISG_N - 1) + ISG_ALPHA / 2;
+
 
 	/* debug */ cout << "Failures 'Not between' = " << _failuresType1 << endl;  /* end debug */
 	/* debug */ cout << "Failures 'Similar' = " << _failuresType2 << endl;  /* end debug */
@@ -193,16 +202,16 @@ static bool Like(ISG_vector_T a1, ISG_float_T b1, ISG_float_T a1Norm, ISG_vector
 	for (int j = 0; j < ISG_N; j++) 
 		like += fabs(a1[j] / a1Norm - a2[j] / a2Norm);
 	shift = fabs(b1 / a1Norm - b2 / a2Norm);
-	if (like < MAX_LIKE)
-		if (shift < MIN_SHIFT)
+	if (like < ISG_MAX_LIKE)
+		if (shift < ISG_MIN_SHIFT)
 			return true;
 
 	like = 0;
 	for (int j = 0; j < ISG_N; j++)
 		like += fabs(a1[j] / a1Norm + a2[j] / a2Norm);
 	shift = fabs(b1 / a1Norm + b2 / a2Norm);
-	if (like < MAX_LIKE)
-		if (shift < MIN_SHIFT)
+	if (like < ISG_MAX_LIKE)
+		if (shift < ISG_MIN_SHIFT)
 			return true;
 
 	return false;
@@ -239,7 +248,6 @@ inline ISG_float_T GenB_i(int i) {
 
 	if (i == ISG_N) return ISG_ALPHA * (ISG_N - 1) + ISG_ALPHA / 2;
 
-	//if (i == ISG_N + 1) return - ISG_RHO;
 	return 0;
 }
 
