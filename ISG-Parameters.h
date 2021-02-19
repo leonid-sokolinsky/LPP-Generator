@@ -11,8 +11,8 @@ Author: Leonid B. Sokolinsky
 #define ISG_NUM_OF_NATURAL_INEQUALITIES (ISG_N)			// Number of natural inequalities for random LPP		|
 #define ISG_FILE "D:/OneDrive/Data/rnd006-0.txt"// File to save a random LPP	|
 #else //--------------------------------------------------------------------------------------------------------+
-#define ISG_FILE "D:/OneDrive/Data/mdlLpp.txt"// File to save a model LPP		|
-#define ISG_NUM_OF_NATURAL_INEQUALITIES 1					// Number of natural inequalities for model LPP		|
+#define ISG_FILE "D:/OneDrive/Data/mdlLpp006.txt"// File to save a model LPP		|
+#define ISG_NUM_OF_NATURAL_INEQUALITIES 0					// Number of natural inequalities for model LPP		|
 #endif//--------------------------------------------------------------------------------------------------------+ 
 #define	ISG_MAX_LIKE 2.5										// Maximal acceptable likeness of equations
 #define	ISG_MIN_SHIFT (ISG_MAX_LIKE*10)						// Minimal acceptable shift

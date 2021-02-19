@@ -32,10 +32,6 @@ extern void ISG_Init() {
 extern void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 	assert(ISG_N * ISG_M * ISG_ALPHA * ISG_RHO * ISG_THETA * _center[0] != 0);
 
-	/*for (int j = 0; j < ISG_N; j++) {
-		c[j] = ((double)rand() / (RAND_MAX + 1)) * C_MAX;
-		_centerObjectF += c[j] * ISG_RHO;
-	}/**/
 	for (int j = 0; j < ISG_N; j++) {
 		c[j] = (ISG_N - j) * C_MAX;
 		_centerObjectF += c[j] * ISG_RHO;
@@ -93,11 +89,12 @@ extern void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 }
 
 extern void ISG_GenMdlLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
-	assert(ISG_NUM_OF_NATURAL_INEQUALITIES == 1);
+	assert(ISG_NUM_OF_NATURAL_INEQUALITIES == 0);
 	/* debug */ cout << "m = " << ISG_M << "\t n = " << ISG_N << endl;
 
 	for (int i = 0; i < ISG_M; i++) {
 		ISG_vector_T a;
+
 		GenA_i(a, i);
 		for (int j = 0; j < ISG_N; j++)
 			A[i][j] = a[j];
@@ -105,7 +102,7 @@ extern void ISG_GenMdlLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 	}
 	// Generating Objective Function Coefficients
 	for (int j = 0; j < ISG_N; j++)
-		c[j] = ((double)ISG_N - j) * 10;
+		c[j] = (ISG_N - j) * C_MAX;
 }
 
 extern errno_t ISG_SaveLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c, const char* filename) {
@@ -226,29 +223,21 @@ static void GenA_i(ISG_float_T* a, int i) {
 		return;
 	}
 
-	if (i == ISG_N) {
+	if (i < ISG_M - 1) {
 		for (int j = 0; j < ISG_N; j++)
-			a[j] = 1;
+			a[j] = 0;
+		a[i - ISG_N] = -1;
 		return;
 	}
 
-/*	if (i == ISG_N + 1) {
-		for (int j = 0; j < ISG_N; j++)
-			a[j] = -1;
-		return;
-	}*/
-
 	for (int j = 0; j < ISG_N; j++)
-		a[j] = 0;
-	a[i - ISG_N - 1] = -1;
+		a[j] = 1;
 }
 
 inline ISG_float_T GenB_i(int i) {
 	if (i < ISG_N) return ISG_ALPHA;
-
-	if (i == ISG_N) return ISG_ALPHA * (ISG_N - 1) + ISG_ALPHA / 2;
-
-	return 0;
+	if (i < ISG_M - 1) return 0;
+	return ISG_ALPHA * (ISG_N - 1) + ISG_ALPHA / 2;
 }
 
 inline void ProjectionOnHiperplane(ISG_vector_T x, ISG_vector_T a, ISG_float_T aNormSquare, ISG_float_T aDotProductx, ISG_float_T b, ISG_vector_T projection) {
