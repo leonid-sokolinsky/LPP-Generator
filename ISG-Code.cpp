@@ -47,10 +47,7 @@ extern void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 			like = false;
 			for (int k = i - 1; k > -1; k--) {
 				if (like = Like(A[i], b[i], _aNorm[i], A[k], b[k], _aNorm[k])) {
-					/* debug */ bad++; /* end debug */
-					//* debug */ cout << k + 1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[k][j] << "\t"; cout << "<=\t" << b[k] << "\n"; /* end debug */
-					//* debug */ cout << i + 1 << ": "; for (int j = 0; j < ISG_N; j++)	cout << A[i][j] << "\t"; cout << "<=\t" << b[i] << "\n"; /* end debug */
-					//* debug */ cout << "------------------------\n";
+					bad++;
 					break;
 				}
 			}
@@ -88,28 +85,11 @@ extern void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 	/* debug */ cout << "Failures 'Similar' = " << _failuresType2 << endl;  /* end debug */
 }
 
-extern void ISG_GenMdlLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
-	assert(ISG_NUM_OF_NATURAL_INEQUALITIES == 0);
-	/* debug */ cout << "m = " << ISG_M << "\t n = " << ISG_N << endl;
-
-	for (int i = 0; i < ISG_M; i++) {
-		ISG_vector_T a;
-
-		GenA_i(a, i);
-		for (int j = 0; j < ISG_N; j++)
-			A[i][j] = a[j];
-		b[i] = GenB_i(i);
-	}
-	// Generating Objective Function Coefficients
-	for (int j = 0; j < ISG_N; j++)
-		c[j] = (ISG_N - j) * C_MAX;
-}
-
 extern errno_t ISG_SaveLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c, const char* filename) {
 	FILE* stream;
 	errno_t err;
 
-	err = fopen_s(&stream,filename, "w");
+	err = fopen_s(&stream, filename, "w");
 	if (err != 0)
 		return err;
 

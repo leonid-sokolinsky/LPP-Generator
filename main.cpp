@@ -17,24 +17,8 @@ int main() {
 
 	cout << setprecision(4);
 
-#ifdef RANDOM_LPP
 	ISG_Init();
 	ISG_GenRndLPP(A, b, c);
-#else
-	ISG_GenMdlLPP(A, b, c);
-#endif
-
-	/* cout << "--- Inequality system: ---\n";
-	for (int i = 0; i < ISG_M; i++) {
-		cout << i + 1 <<":\t";
-		for (int j = 0; j < ISG_N; j++)
-			cout << A[i][j] << "\t";
-		cout << "<= " << b[i] << "\n";
-	}
-	cout << "--- Objective function: ---\n";
-	for (int j = 0; j < ISG_N; j++)
-		cout << c[j] << "\t";
-	cout << "\n";/**/
 
 	errno_t err;
 	err = ISG_SaveLPP(A, b, c, ISG_FILE);
