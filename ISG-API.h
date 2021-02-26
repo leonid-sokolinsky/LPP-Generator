@@ -9,7 +9,7 @@ Author: Leonid B. Sokolinsky
 
 void ISG_Init();		// Initialization 
 
-void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c);
+void ISG_GenLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c);
 /* Generate random LPP
 System: Ax <= b
 Obgective function: <c,x>

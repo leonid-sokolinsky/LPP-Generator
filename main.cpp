@@ -18,7 +18,7 @@ int main() {
 	cout << setprecision(4);
 
 	ISG_Init();
-	ISG_GenRndLPP(A, b, c);
+	ISG_GenLPP(A, b, c);
 
 	errno_t err;
 	err = ISG_SaveLPP(A, b, c, ISG_FILE);

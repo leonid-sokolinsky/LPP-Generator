@@ -29,7 +29,7 @@ extern void ISG_Init() {
 		_center[j] = ISG_RHO;
 }
 
-extern void ISG_GenRndLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
+extern void ISG_GenLPP(ISG_matrix_T A, ISG_column_T b, ISG_vector_T c) {
 	assert(ISG_N * ISG_M * ISG_ALPHA * ISG_RHO * ISG_THETA * _center[0] != 0);
 
 	for (int j = 0; j < ISG_N; j++) {
