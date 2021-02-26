@@ -6,7 +6,7 @@ Prefix: ISG
 Author: Leonid B. Sokolinsky
 ==============================================================================*/
 #define ISG_N 4													// Space dimension	
-#define ISG_NUM_OF_NATURAL_INEQUALITIES (ISG_N)					// Number of natural inequalities		|
+#define ISG_NUM_OF_NATURAL_INEQUALITIES (ISG_N)					// Number of random inequalities		|
 #define ISG_FILE "C:/Temp/lpp-1.txt"							// File to save LPP
 #define	ISG_MAX_LIKE 2.5										// Maximal acceptable likeness of equations
 #define	ISG_MIN_SHIFT (ISG_MAX_LIKE*10)							// Minimal acceptable shift
