@@ -246,7 +246,7 @@ void PC_bsf_ParametersOutput(PT_bsf_parameter_T parameter) {
 	cout << "OpenMP is turned off!" << endl;
 #endif // PP_BSF_OMP
 	cout << "Dimension: n = " << PP_N << endl;
-	cout << "Number of Random Inequatios: " << PP_NUM_OF_RND_INEQUALITIES << endl;
+	cout << "Number of Random Inegualities: " << PP_NUM_OF_RND_INEQUALITIES << endl;
 	cout << "Length of hypercube edge ALPHA = " << PP_ALPHA << endl;
 	cout << "Radius of large hypersphere RHO = " << PP_THETA << endl;
 	cout << "Radius of small hypersphere THETA = " << PP_RHO << endl;
