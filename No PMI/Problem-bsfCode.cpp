@@ -16,6 +16,9 @@ using namespace std;
 void PC_bsf_Init(bool* success) {
 	/*cout << "Enter a space dimension: ";
 	cin >> PD_n;/**/
+
+	srand((unsigned)time(NULL) * (BSF_sv_mpiRank + 10));
+
 	PD_n = 3;
 	if (PD_n > PP_MAX_N) {
 		cout << "Space dimension must be < " << PP_MAX_N + 1 << "!\n";
@@ -42,8 +45,6 @@ void PC_bsf_Init(bool* success) {
 
 	PD_m = 2 * PD_n + PD_NumOfRndInequalities + 1;
 	PD_k = 2 * PD_n + 1;
-
-	srand((unsigned)time(NULL) * (BSF_sv_mpiRank + 10));
 
 	for (int j = 0; j < PD_n; j++)
 		PD_center[j] = PP_THETA;
@@ -314,7 +315,8 @@ void PC_bsf_IterOutput_3(PT_bsf_reduceElem_T_3* reduceResult, int reduceCounter,
 void PC_bsf_ProblemOutput(PT_bsf_reduceElem_T* reduceResult, int reduceCounter, PT_bsf_parameter_T parameter,
 	double t) 
 {
-	PD_fileName = "lpp.txt";
+	PD_fileName = PP_PATH;
+	PD_fileName += "lpp.txt";
 	const char* fileName = PD_fileName.c_str();
 
 #ifdef PP_MATRIX_OUTPUT
