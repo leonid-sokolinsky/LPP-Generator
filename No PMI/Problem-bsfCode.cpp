@@ -122,7 +122,7 @@ void PC_bsf_MapF(PT_bsf_mapElem_T* mapElem, PT_bsf_reduceElem_T* reduceElem, int
 			reduceElem->b = -reduceElem->b;
 		}
 			
-		bool like;
+		bool like = false;
 		for (int i = 0; i < PD_n + 1; i++)
 			if (like = Like(reduceElem->a, reduceElem->b, reduceElem->aNorm, PD_A[i], PD_b[i], PD_aNorm[i]))
 				break;
