@@ -1,6 +1,6 @@
 /*==============================================================================
-Project: Bulk Synchronous Farm (BSF)
-Theme: BSF Skeleton
+Project: LiFe
+Theme: LPP Generator
 Module: Problem-bsfParameters.h (BSF-skeleton parameters)
 Prefix: PP_BSF
 Author: Leonid B. Sokolinsky

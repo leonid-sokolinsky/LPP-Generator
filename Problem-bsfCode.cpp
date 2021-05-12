@@ -1,6 +1,6 @@
 /*==============================================================================
-Project: Bulk Synchronous Farm (BSF)
-Theme: BSF Skeleton
+Project: LiFe
+Theme: LPP Generator
 Module: Problem-bsfCode.cpp (Problem-dependent Code)
 Prefix: PC
 Author: Leonid B. Sokolinsky
