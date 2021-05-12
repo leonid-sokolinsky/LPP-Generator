@@ -14,12 +14,12 @@ using namespace std;
 
 //----------------------- Predefined problem-dependent functions -----------------
 void PC_bsf_Init(bool* success) {
+	srand((unsigned)time(NULL) * (BSF_sv_mpiRank + 10));
+	
 	/*cout << "Enter a space dimension: ";
 	cin >> PD_n;/**/
+	PD_n = PP_N;
 
-	srand((unsigned)time(NULL) * (BSF_sv_mpiRank + 10));
-
-	PD_n = 3;
 	if (PD_n > PP_MAX_N) {
 		cout << "Space dimension must be < " << PP_MAX_N + 1 << "!\n";
 		*success = false;
@@ -35,7 +35,8 @@ void PC_bsf_Init(bool* success) {
 
 	/*cout << "Enter a number of random inequalities: ";
 	cin >> PD_NumOfRndInequalities;/**/
-	PD_NumOfRndInequalities = 5;
+	PD_NumOfRndInequalities = PP_NUM_OF_RND_INEQUALITIES;
+
 	if (PD_NumOfRndInequalities > PP_MAX_N) {
 		cout << "Number of random inequalities must be < " << PP_MAX_N + 1 << "!\n";
 		*success = false;
@@ -315,10 +316,6 @@ void PC_bsf_IterOutput_3(PT_bsf_reduceElem_T_3* reduceResult, int reduceCounter,
 void PC_bsf_ProblemOutput(PT_bsf_reduceElem_T* reduceResult, int reduceCounter, PT_bsf_parameter_T parameter,
 	double t) 
 {
-	PD_fileName = PP_PATH;
-	PD_fileName += "lpp.txt";
-	const char* fileName = PD_fileName.c_str();
-
 #ifdef PP_MATRIX_OUTPUT
 	cout << "------- Random inequalities -------" << endl;
 	for (int i = 2 * PD_n + 1; i < 2 * PD_n + 1 + PP_NUM_OF_RND_INEQUALITIES; i++) {
@@ -329,11 +326,16 @@ void PC_bsf_ProblemOutput(PT_bsf_reduceElem_T* reduceResult, int reduceCounter, 
 	cout << "-----------------------------------" << endl;
 #endif // PP_MATRIX_OUTPUT
 #ifdef PP_FILE_OUTPUT
+	PD_fileName = PP_PATH;
+	PD_fileName += PP_LPP_FILE;
+	const char* fileName = PD_fileName.c_str();
 	FILE* stream;
 	cout << "-----------------------------------" << endl;
 	stream = fopen(fileName, "w");
-	if (stream == NULL) 
+	if (stream == NULL) {
 		cout << "Failure of opening file " << fileName << "!\n";
+		return;
+	}
 
 	fprintf(stream, "%d\t%d\n", PD_m, PD_n);
 

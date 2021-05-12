@@ -7,6 +7,7 @@ Author: Leonid B. Sokolinsky
 ==============================================================================*/
 #include "Problem-Types.h"			// Problem Parameters 
 using namespace std;
+
 //========================== Problem variables ====================================
 static int PD_n;
 static int PD_m;
@@ -23,4 +24,6 @@ static PT_column_T PD_b;
 static PT_vector_T PD_c;
 static PT_vector_T PD_center;		// Center of hypercube
 static PT_column_T PD_aNorm;
+
+//========================== Files ==============================
 static string PD_fileName;

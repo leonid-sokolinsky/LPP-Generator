@@ -92,7 +92,7 @@ void PC_bsf_MapF(PT_bsf_mapElem_T* mapElem, PT_bsf_reduceElem_T* reduceElem, int
 			reduceElem->b = -reduceElem->b;
 		}
 			
-		bool like;
+		bool like = false;
 		for (int i = 0; i < PP_N + 1; i++)
 			if (like = Like(reduceElem->a, reduceElem->b, reduceElem->aNorm, PD_A[i], PD_b[i], PD_aNorm[i]))
 				break;
@@ -307,7 +307,6 @@ void PC_bsf_IterOutput_3(PT_bsf_reduceElem_T_3* reduceResult, int reduceCounter,
 void PC_bsf_ProblemOutput(PT_bsf_reduceElem_T* reduceResult, int reduceCounter, PT_bsf_parameter_T parameter,
 	double t) 
 {
-
 	cout << "=============================================" << endl;
 	cout << "Time: " << t << endl;
 	cout << "Iterations: " << BSF_sv_iterCounter << endl;
@@ -324,12 +323,16 @@ void PC_bsf_ProblemOutput(PT_bsf_reduceElem_T* reduceResult, int reduceCounter, 
 	cout << "Failures 'Obtuse angle to objective' = " << PD_failuresType2 << endl;
 	cout << "Failures 'Similar' = " << PD_failuresType3 << endl;
 #ifdef PP_FILE_OUTPUT
+	PD_fileName = PP_PATH;
+	PD_fileName += PP_LPP_FILE;
+	const char* fileName = PD_fileName.c_str();
 	FILE* stream;
 	cout << "-----------------------------------" << endl;
-	stream = fopen(PP_FILE, "w");
-	if (stream == NULL)
-		cout << "Failure of opening file " << PP_FILE << "!\n";
-
+	stream = fopen(fileName, "w");
+	if (stream == NULL) {
+		cout << "Failure of opening file " << fileName << "!\n";
+		return;
+	}
 	fprintf(stream, "%d\t%d\n", PP_M, PP_N);
 
 	for (int i = 0; i < PP_M; i++) {
@@ -341,7 +344,7 @@ void PC_bsf_ProblemOutput(PT_bsf_reduceElem_T* reduceResult, int reduceCounter, 
 		fprintf(stream, "%.2f\t", PD_c[j]);
 
 	fclose(stream);
-	cout << "LPP is saved into file '" << PP_FILE << "'." << endl;
+	cout << "LPP is saved into file '" << fileName << "'." << endl;
 	cout << "-----------------------------------" << endl;
 #endif // PP_FILE_OUTPUT
 }

@@ -6,6 +6,7 @@ Prefix: PD
 Author: Leonid B. Sokolinsky
 ==============================================================================*/
 #include "Problem-Types.h"			// Problem Parameters 
+using namespace std;
 
 //========================== Problem variables ====================================
 static PT_float_T PD_centerObjectF;	// Value of object function in the center of hypercube
@@ -20,3 +21,6 @@ static PT_column_T PD_b;
 static PT_vector_T PD_c;
 static PT_vector_T PD_center;		// Center of hypercube
 static PT_column_T PD_aNorm;
+
+//========================== Files ==============================
+static string PD_fileName;
