@@ -1,5 +1,5 @@
 /*==============================================================================
-Project: LiFe
+Project: VaLiPro
 Theme: LPP Generator
 Module: BSF-Data.h (Problem Independent Variables & Data Structures)
 Prefix: BD

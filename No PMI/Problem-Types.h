@@ -1,5 +1,5 @@
 /*==============================================================================
-Project: LiFe
+Project: VaLiPro
 Theme: LPP Generator
 Module: Problem-Types.h (Problem Types)
 Prefix: PT

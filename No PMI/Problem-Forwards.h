@@ -1,5 +1,5 @@
 /*==============================================================================
-Project: LiFe
+Project: VaLiPro
 Theme: LPP Generator
 Module: Problem-bsf-Forwards.h (Problem Function Forwards)
 Author: Leonid B. Sokolinsky 

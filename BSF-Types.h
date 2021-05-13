@@ -1,5 +1,5 @@
 /*==============================================================================
-Project: LiFe
+Project: VaLiPro
 Theme: LPP Generator
 Module: BSF-Types.h (Problem Independent Types)
 Prefix: BT

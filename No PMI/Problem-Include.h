@@ -1,5 +1,5 @@
 /*==============================================================================
-Project: LiFe
+Project: VaLiPro
 Theme: LPP Generator
 Module: Problem-Include.h (Problem "Include" Files)
 Author: Leonid B. Sokolinsky

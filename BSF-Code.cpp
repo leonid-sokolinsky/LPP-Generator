@@ -1,5 +1,5 @@
 /*==============================================================================
-Project: LiFe
+Project: VaLiPro
 Theme: LPP Generator
 Module: BSF-Code.cpp (Problem Independent Code)
 Prefix: BC
